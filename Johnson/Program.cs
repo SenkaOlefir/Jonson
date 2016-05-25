@@ -33,6 +33,11 @@ namespace Johnson
             {
                 for (var j = 0; j < n; j++)
                 {
+	                if (i == j)
+	                {
+		                continue;
+	                }
+
                     Console.Write($"Enter ves between ({i},{j})-> ");
                     enteredValue = Console.ReadLine();
                     graph[i, j] = int.TryParse(enteredValue, out ves) ? ves : (int?)null;
@@ -41,10 +46,10 @@ namespace Johnson
 
             var dictGraph = new Graph<int>();
 
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < n; i++)
             {
                 dictGraph.Add(i, new Dictionary<int, int>());
-                for (var j = 0; j < 6; j++)
+                for (var j = 0; j < n; j++)
                 {
                     if (graph[i, j].HasValue)
                     {
@@ -58,18 +63,30 @@ namespace Johnson
 
             foreach (var key in result.Keys)
             {
-                var stack = new Stack<int>();
+                var stack = new Stack<KeyValuePair<int, int>>();
                 foreach (var key1 in result[key].Keys)
                 {
-                    stack.Push(key1);
+                    stack.Push(new KeyValuePair<int, int>(key1, result[key][key1].Value));
                     var from = key1;
                     while(from != key)
                     {
                         from = result[key][from].Key;
-                        stack.Push(from);
+                        stack.Push(new KeyValuePair<int, int>(from, result[key][from].Value));
                     }
-                    stack.Reverse();
-                    Console.WriteLine(string.Join("->", stack.Select(v => v.ToString())));
+
+	                var resultString = stack.Aggregate(string.Empty, (s, pair) =>
+	                {
+		                if (stack.ToList().IndexOf(pair) == 0)
+		                {
+			                return s + $"{pair.Key}";
+		                }
+		                else
+		                {
+							return s + $" --{pair.Value}--> {pair.Key}";
+						}
+					});
+
+					Console.WriteLine(resultString);
                     stack.Clear();
                 }
             }
