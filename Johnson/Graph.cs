@@ -5,6 +5,12 @@ namespace Johnson
 {
     public class Graph<TKey> : Dictionary<TKey, Dictionary<TKey, int>>
     {
+        public class NegativeCyclesException : Exception
+        {
+            public NegativeCyclesException() : base() { }
+            public NegativeCyclesException(string message) : base(message) { }
+        }
+
         public struct Edge
         {
             public TKey src { get; set; }
@@ -24,7 +30,7 @@ namespace Johnson
                         {
                             src = key,
                             dest = key1,
-                            weight = this[key][key1]
+                            weight = this[key][key1] + 2
                         };
                     }
                 }

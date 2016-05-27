@@ -4,16 +4,13 @@ using System.Collections.Generic;
 
 namespace Johnson
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            string enteredValue = string.Empty;
+            var n = 0;
 
-            int n = 0;
-            int ves = 0;
-
-            Console.Write("Enter count of vertexes -> ");
+            Console.Write("Enter count of vertexes (needs 3 or more) -> ");
             try
             {
                 n = Convert.ToInt32(Console.ReadLine());
@@ -39,7 +36,8 @@ namespace Johnson
 	                }
 
                     Console.Write($"Enter ves between ({i},{j})-> ");
-                    enteredValue = Console.ReadLine();
+                    var enteredValue = Console.ReadLine();
+                    int ves;
                     graph[i, j] = int.TryParse(enteredValue, out ves) ? ves : (int?)null;
                 }
             }
@@ -59,36 +57,45 @@ namespace Johnson
             }
 
             var dijkstra = new Johnson<int>(dictGraph);
-            var result = dijkstra.Perform(6);
 
-            foreach (var key in result.Keys)
+            try
             {
-                var stack = new Stack<KeyValuePair<int, int>>();
-                foreach (var key1 in result[key].Keys)
+                var result = dijkstra.Perform(n + 1);
+
+                Console.WriteLine("Shortest path between all pair of graph");
+                foreach (var key in result.Keys)
                 {
-                    stack.Push(new KeyValuePair<int, int>(key1, result[key][key1].Value));
-                    var from = key1;
-                    while(from != key)
+                    var stack = new Stack<KeyValuePair<int, int>>();
+                    foreach (var key1 in result[key].Keys)
                     {
-                        from = result[key][from].Key;
-                        stack.Push(new KeyValuePair<int, int>(from, result[key][from].Value));
+                        stack.Push(new KeyValuePair<int, int>(key1, result[key][key1].Value));
+                        var from = key1;
+                        while (from != key)
+                        {
+                            from = result[key][from].Key;
+                            stack.Push(new KeyValuePair<int, int>(from, result[key][from].Value));
+                        }
+
+                        var resultString = stack.Aggregate(string.Empty, (s, pair) =>
+                        {
+                            if (stack.ToList().IndexOf(pair) == 0)
+                            {
+                                return s + $"{pair.Key}";
+                            }
+                            else
+                            {
+                                return s + $" --{pair.Value}--> {pair.Key}";
+                            }
+                        });
+
+                        Console.WriteLine(string.Join("->", stack.Select(x => x.Key)));
+                        stack.Clear();
                     }
-
-	                var resultString = stack.Aggregate(string.Empty, (s, pair) =>
-	                {
-		                if (stack.ToList().IndexOf(pair) == 0)
-		                {
-			                return s + $"{pair.Key}";
-		                }
-		                else
-		                {
-							return s + $" --{pair.Value}--> {pair.Key}";
-						}
-					});
-
-					Console.WriteLine(resultString);
-                    stack.Clear();
                 }
+            }
+            catch(Graph<int>.NegativeCyclesException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             Console.ReadKey();
