@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Johnson", "Johnson\Johnson.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jonson_MVC", "Jonson_MVC\Jonson_MVC.csproj", "{41138428-8099-4F64-8279-8A7585D21DEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jonson_MVCTests", "Jonson_MVCTests\Jonson_MVCTests.csproj", "{82AF5599-420C-4421-832E-E9AF846A723D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{41138428-8099-4F64-8279-8A7585D21DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41138428-8099-4F64-8279-8A7585D21DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41138428-8099-4F64-8279-8A7585D21DEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82AF5599-420C-4421-832E-E9AF846A723D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82AF5599-420C-4421-832E-E9AF846A723D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82AF5599-420C-4421-832E-E9AF846A723D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82AF5599-420C-4421-832E-E9AF846A723D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
