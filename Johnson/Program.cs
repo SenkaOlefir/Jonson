@@ -93,7 +93,7 @@ namespace Johnson
                     }
                 }
             }
-            catch(Graph<int>.NegativeCyclesException ex)
+            catch(NegativeCyclesException ex)
             {
                 Console.WriteLine(ex.Message);
             }

@@ -11,10 +11,34 @@
         <div id="mynetwork"></div>
     </div>
     <div class="col-md-3">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a>
-        </p>
+        <form id="shortest-path">
+            <div class="form-horizontal">
+                <h4>Введите пару вершин</h4>
+                <hr />
+                <div class="form-group">
+                    <label class="control-label col-md-2">От</label>
+                    <div class="col-md-4">
+                        <input class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">До</label>
+                    <div class="col-md-4">
+                        <input class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-5">
+                        <input type="submit" value="Найти" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div id="path">
+
+        </div>
     </div>
 </div>
 
@@ -24,30 +48,7 @@
     <script type="text/javascript">
         var nodes = JSON.parse('@Html.Raw(Json.Encode(Model.Nodes))');
         var edges = JSON.parse('@Html.Raw(Json.Encode(Model.Edges))');
-        // create an array with nodes
-        var nodesSet = new vis.DataSet([
-            { id: 1, label: 'Node 1' },
-            { id: 2, label: 'Node 2' },
-            { id: 3, label: 'Node 3' },
-            { id: 4, label: 'Node 4' },
-            { id: 5, label: 'Node 5' },
-            { id: 6, label: 'Node 6' },
-            { id: 7, label: 'Node 7' },
-            { id: 8, label: 'Node 8' }
-        ]);
-
-        // create an array with edges
-        var edgesSet = new vis.DataSet([
-            { from: 1, to: 8, arrows: 'to' },
-            { from: 1, to: 3, arrows: 'to' },
-            { from: 1, to: 2, arrows: 'to' },
-            { from: 2, to: 1, arrows: 'to', label: '-1', font: { align: 'middle' } },
-            { from: 2, to: 4, arrows: 'to' },
-            { from: 2, to: 5, arrows: 'to, from', label: '10', font: { align: 'middle' } },
-            { from: 5, to: 6, arrows: { to: true } },
-            { from: 6, to: 7, arrows: { from: true } }
-        ]);
-
+       
         // create a network
         var container = document.getElementById('mynetwork');
         var data = {
@@ -70,5 +71,60 @@
             }
         };
         var network = new vis.Network(container, data, options);
+
+        $(document).ready(function () {
+            $("#shortest-path").submit(function (form) {
+                var from = form.currentTarget[0].value;
+                var to = form.currentTarget[1].value
+                
+                $.ajax({
+                    url: '@Url.Action("CalculatePath", "Graph")',
+                    data: { from: from, to: to },
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (json) {
+                        if (json.isError !== undefined && json.isError) {
+                            alert(json.errorMessage);
+                            return;
+                        }
+                        var nodes = [];
+                        var edges = [];
+
+                        for (var i = 0; i < json.length; i++) {
+                            nodes.push({ id: json[i].Key, label: json[i].Key });
+                        }
+
+                        for (var i = 0; i < json.length - 1; i++) {
+                            edges.push({ from: json[i].Key, to: json[i + 1].Key, arrows: "to", label: json[i + 1].Value });
+                        }
+
+                        var container = document.getElementById('path');
+                        var data = {
+                            nodes: new vis.DataSet(nodes),
+                            edges: new vis.DataSet(edges)
+                        };
+                        var options = {
+                            height: '300px',
+                            physics: {
+                                forceAtlas2Based: {
+                                    gravitationalConstant: -26,
+                                    centralGravity: 0.005,
+                                    springLength: 230,
+                                    springConstant: 0.18
+                                },
+                                maxVelocity: 146,
+                                solver: 'forceAtlas2Based',
+                                timestep: 0.35,
+                                stabilization: { iterations: 150 }
+                            }
+                        };
+                        var network = new vis.Network(container, data, options);
+
+                    }
+                })
+
+                return false;
+            });
+        });
     </script>
 }

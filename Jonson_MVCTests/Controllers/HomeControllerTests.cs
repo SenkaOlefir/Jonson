@@ -14,9 +14,6 @@ namespace Jonson_MVC.Controllers.Tests
         [TestMethod()]
         public void IndexTest()
         {
-            var controller = new GraphController();
-            var indexResult = controller.Index();
-
             Assert.Fail();
         }
     }

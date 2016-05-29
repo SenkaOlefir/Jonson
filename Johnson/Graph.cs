@@ -3,14 +3,20 @@ using System.Collections.Generic;
 
 namespace Johnson
 {
+    public class NegativeCyclesException : Exception
+    {
+        public NegativeCyclesException() : base() { }
+        public NegativeCyclesException(string message) : base(message) { }
+    }
+
+    public class PathNotExistException : Exception
+    {
+        public PathNotExistException() : base() { }
+        public PathNotExistException(string message) : base(message) { }
+    }
+
     public class Graph<TKey> : Dictionary<TKey, Dictionary<TKey, int>>
     {
-        public class NegativeCyclesException : Exception
-        {
-            public NegativeCyclesException() : base() { }
-            public NegativeCyclesException(string message) : base(message) { }
-        }
-
         public struct Edge
         {
             public TKey src { get; set; }
@@ -59,6 +65,44 @@ namespace Johnson
             {
                 throw new Exception($"Vertex {key} does not exist on graph");
             }
+        }
+
+        public static Graph<int> FormMatrix(int?[,] graph)
+        {
+            var dictGraph = new Graph<int>();
+
+            for (var i = 0; i < graph.GetLength(0); i++)
+            {
+                dictGraph.Add(i, new Dictionary<int, int>());
+                for (var j = 0; j < graph.GetLength(0); j++)
+                {
+                    if (graph[i, j].HasValue)
+                    {
+                        dictGraph[i].Add(j, graph[i, j].Value);
+                    }
+                }
+            }
+
+            return dictGraph;
+        }
+
+        public static Graph<int> FormMatrix(int?[][] graph)
+        {
+            var dictGraph = new Graph<int>();
+
+            for (var i = 0; i < graph.Length; i++)
+            {
+                dictGraph.Add(i, new Dictionary<int, int>());
+                for (var j = 0; j < graph.Length; j++)
+                {
+                    if (graph[i][j].HasValue)
+                    {
+                        dictGraph[i].Add(j, graph[i][j].Value);
+                    }
+                }
+            }
+
+            return dictGraph;
         }
     }
 }

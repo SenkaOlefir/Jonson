@@ -48,7 +48,7 @@ namespace Johnson
                 int weight = edge.weight;
                 if (dist[from] != int.MaxValue &&
                     dist[from] + weight < dist[to])
-                    throw new Graph<T>.NegativeCyclesException("Has negative cycles");
+                    throw new NegativeCyclesException("Has negative cycles");
             }
 
             return dist;

@@ -16,7 +16,7 @@ namespace Jonson_MVC
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Graph", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Graph", action = "Create", id = UrlParameter.Optional }
             );
         }
     }
